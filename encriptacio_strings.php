@@ -3,15 +3,6 @@
 $sp = "kfhxivrozziuortghrvxrrkcrozxlwflrh";
 $mr = " hv ovxozwozv vj o vfrfjvivfj h vmzvlo e hrxvhlmov oz ozx.vw z xve hv loqvn il hv lmnlg izxvwrhrvml ,hv b lh mv,rhhv mf w zrxvlrh.m";
 
-function decrypt($cadena){
-    $grup = str_split($cadena, 3);
-
-    foreach ($grup as $valor) {
-        $grupCanviat = strrev($valor) ;
-        convertirString($grupCanviat);
-      }
-  
-}
 
 function comprovarString($string)
 {
@@ -36,6 +27,18 @@ function convertirString($frase)
         
     }
 }
+
+function decrypt($cadena){
+    $grup = str_split($cadena, 3);
+
+    foreach ($grup as $valor) {
+        $grupCanviat = strrev($valor) ;
+        convertirString($grupCanviat);
+      }
+  
+}
+
+
 decrypt($sp);
 echo "\n";
 decrypt($mr);
