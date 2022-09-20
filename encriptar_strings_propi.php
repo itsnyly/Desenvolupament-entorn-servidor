@@ -42,8 +42,8 @@ function encrypt($text,$ipNumero){
                break;
           }
      }
-     $caractersHexa[count($caractersHexa) - $posicioNumero] =  (intval($caractersHexa[count($caractersHexa) - $posicioNumero]) + intval($ipNumero[0])) - $ipNumero[3];
-
+     $ipSeparada = str_split($ipNumero[0],1);
+     $caractersHexa[count($caractersHexa) - $posicioNumero] =  intval($ipSeparada[0]) + intval($ipSeparada[1]) - intval($ipNumero[3]);
      for ($i = 0; $i < count($caractersHexa); $i++){
           $cadenaCanviada .= $caractersHexa[$i];
      }
@@ -57,7 +57,6 @@ function decrypt($text,$ipNumero){
     $numeroPosicio = 0;
     $valorDecode = base64_decode($text);
     $valorsHexadecimal = bin2hex($valorDecode);
-    //echo $valorsHexadecimal . "\n";
     $caractersHexadecimal = str_split($valorsHexadecimal,1);
 
     for($i = count($caractersHexadecimal) -1; $i>0; $i--){
@@ -69,17 +68,17 @@ function decrypt($text,$ipNumero){
                break;
           }
      }
+     $ipSeparada = str_split($ipNumero[0],1);
     
-     $caractersHexadecimal[count($caractersHexadecimal) - $numeroPosicio] =  (intval($caractersHexadecimal[count($caractersHexadecimal) - $numeroPosicio]) - intval($ipNumero[0])) + $ipNumero[3];
+     $caractersHexadecimal[count($caractersHexadecimal) - $numeroPosicio] = intval($ipSeparada[0]) + intval($ipSeparada[1]) + intval($ipNumero[3]);
 
      for ($i = 0; $i < count($caractersHexadecimal); $i++){
           $cadenaHexCanviada .= $caractersHexadecimal[$i];
      }
-     //echo $cadenaHexCanviada;
      $valorsBin = hex2bin($cadenaHexCanviada);
      $resultat = base64_decode($valorsBin);
-     $resultat = partirArray($valorsBin);
-     //echo $resultat;
+     $resultatFinal = partirArray($resultat);
+     echo $resultatFinal;
 
 }
 
@@ -88,13 +87,14 @@ $ip = getIp();
 $ipNumero = explode(".",$ip);
 $text = "Operació completada !!";
 
-//echo  "Text Original ---> " . $text;
-//echo "\n";
+echo  "Text Original ---> " . $text;
+echo "\n";
 $textEncriptat = encrypt($text,$ipNumero);
-//echo "Text Encriptat ---> " . $textEncriptat;
+echo "Text Encriptat ---> " . $textEncriptat;
+echo "\n";
+echo "Text Desencriptat ---> ";
+echo decrypt($textEncriptat,$ipNumero);
 //echo "\n";
-//echo "Text Desencriptat ---> " . $text;
-//echo "\n";
-decrypt($textEncriptat,$ipNumero);
+
 
 ?> 
