@@ -33,7 +33,6 @@ function encrypt($text,$ipNumero){
      //echo $caracters64 . "\n";
      $valorHexa = bin2hex($caracters64);
      $caractersHexa = str_split($valorHexa,1);  
-     echo $valorHexa;
      for($i = count($caractersHexa) -1; $i>0; $i--){
           if(!is_numeric($caractersHexa[$i])){
                $posicioNumero++;
@@ -43,8 +42,6 @@ function encrypt($text,$ipNumero){
                break;
           }
      }
-     $cadenaValorsACanviar = $caractersHexa[$posicioNumero] -2 . $caractersHexa[$posicioNumero] -1 . $caractersHexa[$posicioNumero];
-     echo $cadenaValorsACanviar;
      $caractersHexa[count($caractersHexa) - $posicioNumero] =  (intval($caractersHexa[count($caractersHexa) - $posicioNumero]) + intval($ipNumero[0])) - $ipNumero[3];
 
      for ($i = 0; $i < count($caractersHexa); $i++){
@@ -72,7 +69,7 @@ function decrypt($text,$ipNumero){
                break;
           }
      }
-     
+    
      $caractersHexadecimal[count($caractersHexadecimal) - $numeroPosicio] =  (intval($caractersHexadecimal[count($caractersHexadecimal) - $numeroPosicio]) - intval($ipNumero[0])) + $ipNumero[3];
 
      for ($i = 0; $i < count($caractersHexadecimal); $i++){
