@@ -1,7 +1,8 @@
 <?php
 /**
  * Crea una matriu amb el mateix nombre de columnes i files.
- * * Comprova que el paràmetre sigui un array i que els valors interns d'aquest siguin correctes.
+ * Crea una diagonal amb * i realitza la suma dels index de l'array per determinar el valor de les posicions que es troben a d'alt de la diagonal
+ * i per les posicions d'abaix crea un valor random entre 10 i 20.
  * @param numero numero conjunt per les files i les columnes.
  * @return matriu matriu creada.
  */
