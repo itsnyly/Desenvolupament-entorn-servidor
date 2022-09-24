@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Crea una matriu amb el mateix nombre de columnes i files.
+ * * comprova que el paràmetre sigui un array i que valors interns d'aquest siguin correctes
+ * @param numero numero conjunt per les files i les columnes
+ * @return matriu matriu creada
+ */
 function creaMatriu($numero){
 
     for ($fila = 0; $fila < $numero; $fila++){
@@ -18,6 +23,13 @@ function creaMatriu($numero){
 
     return $matriu;
 }
+
+/**
+ * Crea una matriu amb el nombre de files i de columnes diferent.
+ * @param numFila numero de files
+ * @param numCol numero de columnes
+ * @return matriu matriu creada
+ */
 function creaMatriuNoQuadrada($numFila, $numCol){
 
     for ($fila = 0; $fila < $numFila; $fila++){
@@ -36,21 +48,63 @@ function creaMatriuNoQuadrada($numFila, $numCol){
 
     return $matriu;
 }
+
+/**
+ * Mostra la informació d'una matriu amb format de taula html
+ * @param matriu matriu plena
+ * @return taula un string amb la composició d'atributs per mostrar la matriu amb html
+ */
 function mostrarArray($matriu){
-    $taula = '<table border = 1 >';
-    foreach ( $matriu as $fila ) {
-        $taula .= '<tr>';
-        foreach ( $fila as $columna ) {
-                $taula .= '<td>'.$columna.'</td>';
-        }
-        $taula .= '</tr>';
+    if(sizeof($matriu) > 0){
+        $taula = '<table border = 1 >';
+        foreach ( $matriu as $fila ) {
+            $taula .= '<tr>';
+            foreach ( $fila as $columna ) {
+                    $taula .= '<td>'.$columna.'</td>';
+            }
+            $taula .= '</tr>';
+    }
+        $taula .= '</table>';
+        return $taula;
+    }
+    else{
+        return false;
+    }
 }
-    $taula .= '</table>';
-    return $taula;
+
+/**
+ * Canvia els valors de les files i de les columnes entre ells
+ * @param matriu matriu plena 
+ * @return matriuCanviada matriu amb els valors canviats
+ */
+function transposaMatriu($matriu){
+    if(sizeof($matriu) > 0){
+        for ($fila = 0; $fila < sizeof($matriu); $fila++){
+            for($columna = 0; $columna < sizeof($matriu[0]); $columna++){
+                    $matriuCanviada[$columna][$fila] = $matriu[$fila][$columna];
+            }
+        }
+        return $matriuCanviada;
+    }
+    else{
+        return false;
+    }   
 }
 
 $array = creaMatriu(4);
 $matriu2B = creaMatriuNoQuadrada(2,8);
-$taulaCreada = mostrarArray($matriu2B);
-echo $taulaCreada;
+$matriuCanviada = transposaMatriu($matriu2B);
+$taulaCreada1 = mostrarArray($array);
+$taulaCreada2 = mostrarArray($matriu2B);
+$taulaCreada3 = mostrarArray($matriuCanviada);
+
+echo "Exercici 2a";
+echo $taulaCreada1;
+echo "<br>";
+echo "Exercici 2b";
+echo $taulaCreada2;
+echo "<br>";
+echo "Exercici 2c";
+echo $taulaCreada3;
+
 ?>
