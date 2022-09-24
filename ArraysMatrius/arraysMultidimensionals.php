@@ -1,9 +1,9 @@
 <?php
 /**
  * Crea una matriu amb el mateix nombre de columnes i files.
- * * comprova que el paràmetre sigui un array i que valors interns d'aquest siguin correctes
- * @param numero numero conjunt per les files i les columnes
- * @return matriu matriu creada
+ * * Comprova que el paràmetre sigui un array i que els valors interns d'aquest siguin correctes.
+ * @param numero numero conjunt per les files i les columnes.
+ * @return matriu matriu creada.
  */
 function creaMatriu($numero){
 
@@ -26,9 +26,9 @@ function creaMatriu($numero){
 
 /**
  * Crea una matriu amb el nombre de files i de columnes diferent.
- * @param numFila numero de files
- * @param numCol numero de columnes
- * @return matriu matriu creada
+ * @param numFila numero de files.
+ * @param numCol numero de columnes.
+ * @return matriu matriu creada.
  */
 function creaMatriuNoQuadrada($numFila, $numCol){
 
@@ -50,9 +50,9 @@ function creaMatriuNoQuadrada($numFila, $numCol){
 }
 
 /**
- * Mostra la informació d'una matriu amb format de taula html
- * @param matriu matriu plena
- * @return taula un string amb la composició d'atributs per mostrar la matriu amb html
+ * Mostra la informació d'una matriu amb format de taula html.
+ * @param matriu matriu plena.
+ * @return taula un string amb la composició d'atributs per mostrar la matriu amb html.
  */
 function mostrarArray($matriu){
     if(sizeof($matriu) > 0){
@@ -73,9 +73,9 @@ function mostrarArray($matriu){
 }
 
 /**
- * Canvia els valors de les files i de les columnes entre ells
- * @param matriu matriu plena 
- * @return matriuCanviada matriu amb els valors canviats
+ * Canvia els valors de les files i de les columnes entre ells.
+ * @param matriu matriu plena.
+ * @return matriuCanviada matriu amb els valors canviats.
  */
 function transposaMatriu($matriu){
     if(sizeof($matriu) > 0){
