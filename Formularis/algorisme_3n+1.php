@@ -22,24 +22,36 @@
 <?php
 function algorisme3n($valorN){
     $cadena = "";
-    while($valorN != 1 || $valorN != 0){
+    $posicions = 0;
+    $numeroAlt = $valorN;
+    while($valorN > 1){
         if($valorN % 2 == 0){
             $valorN = $valorN /2;
-            echo $valorN . ",";
+            echo $valorN . " ";
+            $posicions++;
+            if($valorN > $numeroAlt){
+                $numeroAlt = $valorN;
+            }
         }
         else{
-            $valorN = ($valorN *3 +1) /2;
-            echo $valorN . ",";
+            $valorN = ($valorN *3 +1);
+            echo $valorN . " ";
+            $posicions++;
+            if($valorN > $numeroAlt){
+                $numeroAlt = $valorN;
+            }
         }
     }
+    echo "<br>";
+    echo "El número de passes a sigut de : " . $posicions . " ";
+    echo "<br>";
+    echo "El número més gran ha sigut el : " . $numeroAlt;
     
-    //return $cadena;
+   // return $cadena;
 
 }
 
 echo algorisme3n($_REQUEST["n"]);
-
-
 
 ?>
 </body>
