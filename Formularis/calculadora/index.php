@@ -40,11 +40,13 @@ function mostrarNumero(){
             break;
         case "=":
             array_pop($_REQUEST);
-            if($_REQUEST != null){
-                $valor = eval("return (".implode($_REQUEST).");");
+            $primerValor = reset($_REQUEST);
+            if($primerValor == "+" | $primerValor == "-" | $primerValor == "*" | $primerValor == "." | $primerValor == "/" | $primerValor == ""){
+                 $valor = "ERROR";
             }
             else{
-                
+                $valor = eval("return (".implode($_REQUEST).");");
+
             }
             break;      
     }
