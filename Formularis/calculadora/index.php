@@ -5,10 +5,43 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <title>Calculadora</title>
 </head>
+<?php
+
+function mostrarNumero(){
+    $valor = implode($_GET);
+    if (isset($_REQUEST["resultat"]) && (str_contains($_REQUEST['resultat'], "INF")) || (str_contains($_REQUEST['resultat'], "ERROR"))) {
+
+        $valor = str_replace("INF","",$valor);
+        $valor = str_replace("ERROR","",$valor);
+    }
+   
+    switch(end($_GET)){
+        case "C":
+            $valor = ""; 
+            break;
+        case "=":
+            try{
+                array_pop($_GET);
+                eval("$valor= (".implode($_GET).");");
+                if(is_float($valor) && (int)strlen(substr(strrchr($valor, "."), 1)) > 4 ){
+                    $valor = number_format((float)$valor, 4, '.', '');
+                }
+            }
+            catch(DivisionByZeroError $e){
+                $valor = "INF";
+            }
+            catch(Throwable $ex){
+                $valor = "ERROR";
+            }
+            break;      
+    }
+    return $valor;
+}
+?>
 <body>
     <div class="container">
-        <form name="calc" class="calculator" action="" method="post">
-            <input type="text" class="value" readonly value= "<?php echo mostrarNumero();?>"  name="resultat"/>
+        <form name="calc" class="calculator" action="index.php" method="get">
+            <input type="text" class="value" readonly value= "<?= mostrarNumero()?>"  name="resultat"/>
             <span class="num clear"><input type ="submit" value="C" name="tecla"></span>
             <span class="num"><input type ="submit" value="/" name="tecla"></span>
             <span class="num"><input type ="submit" value="*" name="tecla"></span>
@@ -31,28 +64,3 @@
     </div>
 </body>
 
-<?php
-function mostrarNumero(){
-    $valor = implode($_REQUEST);
-    switch(end($_REQUEST)){
-        case "C":
-            $valor = ""; 
-            break;
-        case "=":
-            array_pop($_REQUEST);
-            $primerValor = reset($_REQUEST);
-            if($primerValor == "+" | $primerValor == "-" | $primerValor == "*" | $primerValor == "." | $primerValor == "/" | $primerValor == ""){
-                 $valor = "ERROR";
-            }
-            else{
-                $valor = eval("return (".implode($_REQUEST).");");
-
-            }
-            break;      
-    }
-    return $valor;
-}
-
-
-
-?>
