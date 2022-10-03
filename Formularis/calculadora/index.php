@@ -61,10 +61,10 @@ function mostarNumero() {
     <div class="container">
         <form name="calc" class="calculator" action="index.php" method="post">
             <input type="text" class="value" readonly value="<?=mostarNumero()?>" name="resultat" />
-            <span class="num"><input type ="submit" value="(" name="tecla"></span>
-            <span class="num"><input type ="submit" value=")" name="tecla"></span>
-            <span class="num"><input type ="submit" value="SIN" name="tecla"></span>
-            <span class="num"><input type ="submit" value="COS" name="tecla"></span>
+            <span class="num petit"><input type ="submit" value="(" name="tecla"></span>
+            <span class="num petit"><input type ="submit" value=")" name="tecla"></span>
+            <span class="num petit"><input type ="submit" value="SIN" name="tecla"></span>
+            <span class="num petit"><input type ="submit" value="COS" name="tecla"></span>
             <span class="num clear" ><input type ="submit" value="C"name="tecla"></span>
             <span class="num"><input type ="submit" value="/" name="tecla"></span>
             <span class="num"><input type ="submit" value="*" name="tecla"></span>

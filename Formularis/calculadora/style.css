@@ -103,6 +103,9 @@ body {
     grid-row: span 2;
     height: 180px;
 }
+.calculator .petit{
+    height:45px;
+}
 .calculator .equal {
     background: #2196f3;
 }
