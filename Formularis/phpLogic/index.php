@@ -1,3 +1,6 @@
+<?php 
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -93,5 +96,10 @@
         }, 500)
     }
 </script>
+<?php 
+    for ($i=0; $i < $_SESSION.count(); $i++) { 
+        echo $_SESSION[$i];
+    }
+?>
 </body>
 </html>
