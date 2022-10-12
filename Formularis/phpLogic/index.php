@@ -1,6 +1,7 @@
 <?php 
 session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -61,7 +62,7 @@ session_start();
         <button id="submit-button" type="submit" title="Introdueix la paraula">Introdueix</button>
     </div>
     <div class="scoreboard">
-        <div>Has trobat <span id="letters-found">0</span> <span id="found-suffix">funcions</span><span id="discovered-text">.</span>
+        <div>Has trobat <?php print_r(mostrarResultats())?> <span id="found-suffix">funcions</span><span id="discovered-text">.</span>
         </div>
         <div id="score"></div>
         <div id="level"></div>
@@ -96,10 +97,53 @@ session_start();
         }, 500)
     }
 </script>
+
 <?php 
-    for ($i=0; $i < $_SESSION.count(); $i++) { 
-        echo $_SESSION[$i];
+
+    function mostrarResultats(){
+       if(isset($_SESSION["resultats"])){
+        return sizeof($_SESSION["resultats"]);
+       }
+       else{
+        return 0;
+       }
     }
+
+    function crearArrayLletres(){
+        for ($i=65; $i < 91 ; $i++) { 
+            $caracters[$i] = chr($i);
+        }
+        array_push($caracters, "_");
+        return $caracters;
+    }
+
+    function generarLletres($arrayCaracters){
+        for ($i=0; $i < 8 ; $i++) { 
+            $lletra = array_rand($arrayCaracters);
+            if(isset($lletresAleatories)){
+                for ($i=0; $i < sizeof($lletresAleatories); $i++) { 
+                    if($arrayCaracters[$lletra] == $lletresAleatories[$i]){
+                        $trobat = true;
+                    }
+                }
+                if($trobat == false){
+                    $lletresAleatories[$i] = $arrayCaracters[$lletra];
+
+                }
+                else{
+                    $i--;
+                }
+            }
+            else{
+                $lletresAleatories[$i] = $arrayCaracters[$lletra];
+            }
+        }
+
+        return $lletresAleatories;
+    }
+
+    /*$caracters = crearArrayLletres();
+    print_r(generarLletres($caracters));*/
 ?>
 </body>
 </html>
