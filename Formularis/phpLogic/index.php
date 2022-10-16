@@ -1,9 +1,52 @@
-<?php 
+<?php
 session_start();
+
+function generarLletra()
+{
+    $caracters = "abcdefghijklmnopqrstuvwxyz_";
+    $index = rand(0, 26);
+    $lletra = $caracters[$index];
+
+    return $lletra;
+}
+function generar7Lletres()
+{
+    $cadenaLletres = "";
+    for ($i = 0; $i < 7; $i++) {
+        $cadenaLletres .= generarLletra();
+    }
+    return $cadenaLletres;
+}
+
+
+function escriureLletresHexagon($arrayFuncions)
+{
+    if (!isset($_SESSION["lletres"])) {
+
+        $comptador = 0;
+        while ($comptador < 3) {
+            $cadenaLletres = generar7Lletres();
+            for ($i = 0; $i < sizeof($arrayFuncions["internal"]); $i++) {
+                if (str_contains($cadenaLletres, $arrayFuncions["internal"][$i])) {
+                    $comptador++;
+                    
+                }
+            }
+            if($comptador > 3){
+                $_SESSION["lletres"][] = $cadenaLletres;
+            }
+        
+    }
+}
+}
+$funcions = get_defined_functions();
+escriureLletresHexagon($funcions);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="ca">
+
 <head>
     <title>PHPògic</title>
     <meta charset="utf-8">
@@ -12,112 +55,109 @@ session_start();
     <link href="//fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
+
 <body data-joc="2022-10-07">
     <form action="process.php" method="post">
-<div class="main">
-    <h1>
-        <a href=""><img src="logo.png" height="54" class="logo" alt="PHPlògic"></a>
-    </h1>
-    <!--<div class="container-notifications">
+        <div class="main">
+            <h1>
+                <a href=""><img src="logo.png" height="54" class="logo" alt="PHPlògic"></a>
+            </h1>
+            <!--<div class="container-notifications">
         <p class="hide" id="message" style="">MISSATGE D'ERROR</p>
     </div>-->
-    <div class="cursor-container">
-        <p id="input-word"><span id="test-word"></span><span id="cursor">|</span></p>
-        <input type="hidden" name="paraula" id="campText">
-    </div>
-    <div class="container-hexgrid">
-        <ul id="hex-grid">
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='e' draggable="false"><p>e</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='s' draggable="false"><p>s</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='a' draggable="false"><p>a</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='n' draggable="false" id="center-letter"><p>n</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='r' draggable="false"><p>r</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='t' draggable="false"><p>t</p></a></div>
-            </li>
-            <li class="hex">
-                <div class="hex-in"><a class="hex-link" data-lletra='l' draggable="false"><p>l</p></a></div>
-            </li>
-        </ul>
-    </div>
-    <div class="button-container">
-        <button id="delete-button" type="button" title="Suprimeix l'última lletra" onclick="suprimeix()"> Suprimeix</button>
-        <button id="shuffle-button" type="button" class="icon" aria-label="Barreja les lletres" title="Barreja les lletres">
-            <svg width="16" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 512 512">
-                <path fill="currentColor"
-                      d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z"></path>
-            </svg>
-        </button>
-        <button id="submit-button" type="submit" title="Introdueix la paraula">Introdueix</button>
-    </div>
-    <div class="scoreboard">
-        <div>Has trobat <?php print_r(mostrarResultats())?> <span id="found-suffix">funcions</span><span id="discovered-text">.</span>
+            <div class="cursor-container">
+                <p id="input-word"><span id="test-word"></span><span id="cursor">|</span></p>
+                <input type="hidden" name="paraula" id="campText">
+            </div>
+            <div class="container-hexgrid">
+                <?php
+                echo ("<ul id='hex-grid'>");
+                foreach ($_SESSION["lletres"] as $key => $value) {
+                    echo ("<li class='hex'>");
+                    if ($key == 3) {
+
+                        echo ("<div class='hex-in'><a class='hex-link' data-lletra='n' draggable='false' id='center-letter'><p>" . $value . "</p></a></div>");
+                    } else {
+                        echo ("<div class='hex-in'><a class='hex-link' data-lletra='e' draggable='false'><p>" . $value . "</p></a></div>
+            </li>");
+                    }
+                }
+                echo "</ul>";
+                ?>
+            </div>
+            <div class="button-container">
+                <button id="delete-button" type="button" title="Suprimeix l'última lletra" onclick="suprimeix()"> Suprimeix</button>
+                <button id="shuffle-button" type="button" class="icon" aria-label="Barreja les lletres" title="Barreja les lletres">
+                    <svg width="16" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path fill="currentColor" d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z"></path>
+                    </svg>
+                </button>
+                <button id="submit-button" type="submit" title="Introdueix la paraula">Introdueix</button>
+            </div>
+            <div class="scoreboard">
+                <div>Has trobat <?php print_r(mostrarResultats()) ?> <span id="found-suffix">funcions</span> <strong><?php print_r(mostrarNomsFuncions()) ?></strong><span id="discovered-text">.</span>
+                </div>
+                <div id="score"></div>
+                <div id="level"></div>
+            </div>
         </div>
-        <div id="score"></div>
-        <div id="level"></div>
-    </div>
-</div>
-</form>
-<script>
-    
-    function amagaError(){
-        if(document.getElementById("message"))
-            document.getElementById("message").style.opacity = "0"
-    }
-    function afegeixLletra(lletra){
-        document.getElementById("test-word").innerHTML += lletra;
-        document.getElementById("campText").value += lletra;
-    }
-    function suprimeix(){
-        document.getElementById("test-word").innerHTML = document.getElementById("test-word").innerHTML.slice(0, -1);
-        document.getElementById("campText").value = document.getElementById("campText").value.slice(0, -1)
-    }
-    window.onload = () => {
-        // Afegeix funcionalitat al click de les lletres
-        Array.from(document.getElementsByClassName("hex-link")).forEach((el) => {
-            el.onclick = ()=>{afegeixLletra(el.getAttribute("data-lletra"))}
-        })
-        setTimeout(amagaError, 2000)
-        //Anima el cursor
-        let estat_cursor = true;
-        setInterval(()=>{
-            document.getElementById("cursor").style.opacity = estat_cursor ? "1": "0"
-            estat_cursor = !estat_cursor
-        }, 500)
-    }
-</script>
-
-<?php 
-
-    function mostrarResultats(){
-       if(isset($_SESSION["resultats"])){
-        return sizeof($_SESSION["resultats"]);
-       }
-       else{
-        return 0;
-       }
-    }
-
-    function crearArrayLletres(){
-        for ($i=65; $i < 91 ; $i++) { 
-            $caracters[$i] = chr($i);
+    </form>
+    <script>
+        function amagaError() {
+            if (document.getElementById("message"))
+                document.getElementById("message").style.opacity = "0"
         }
-        array_push($caracters, "_");
-        return $caracters;
+
+        function afegeixLletra(lletra) {
+            document.getElementById("test-word").innerHTML += lletra;
+            document.getElementById("campText").value += lletra;
+        }
+
+        function suprimeix() {
+            document.getElementById("test-word").innerHTML = document.getElementById("test-word").innerHTML.slice(0, -1);
+            document.getElementById("campText").value = document.getElementById("campText").value.slice(0, -1)
+        }
+        window.onload = () => {
+            // Afegeix funcionalitat al click de les lletres
+            Array.from(document.getElementsByClassName("hex-link")).forEach((el) => {
+                el.onclick = () => {
+                    afegeixLletra(el.getAttribute("data-lletra"))
+                }
+            })
+            setTimeout(amagaError, 2000)
+            //Anima el cursor
+            let estat_cursor = true;
+            setInterval(() => {
+                document.getElementById("cursor").style.opacity = estat_cursor ? "1" : "0"
+                estat_cursor = !estat_cursor
+            }, 500)
+        }
+    </script>
+
+    <?php
+
+    function mostrarResultats()
+    {
+        if (isset($_SESSION["resultats"])) {
+            return sizeof($_SESSION["resultats"]);
+        } else {
+            return 0;
+        }
+    }
+    function mostrarNomsFuncions()
+    {
+        if (isset($_SESSION["resultats"])) {
+            return implode(" ", $_SESSION["resultats"]);
+        }
     }
 
-    function generarLletres($arrayCaracters){
+    /*function lletresHexagon(){
+        $comptador = 0;
+        while ($comptador <7){
+        }
+    }*/
+
+    /* function generarLletres($arrayCaracters){
         for ($i=0; $i < 8 ; $i++) { 
             $lletra = array_rand($arrayCaracters);
             if(isset($lletresAleatories)){
@@ -140,10 +180,11 @@ session_start();
         }
 
         return $lletresAleatories;
-    }
+    }*/
 
     /*$caracters = crearArrayLletres();
     print_r(generarLletres($caracters));*/
-?>
+    ?>
 </body>
+
 </html>
