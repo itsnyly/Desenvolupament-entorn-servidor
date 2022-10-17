@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 function generarLletra()
 {
     $caracters = "abcdefghijklmnopqrstuvwxyz_";
@@ -9,36 +10,60 @@ function generarLletra()
 
     return $lletra;
 }
-function generar7Lletres()
+function generar6Lletres($lletraMig)
 {
     $cadenaLletres = "";
-    for ($i = 0; $i < 7; $i++) {
+    for ($i = 0; $i < 6; $i++) {
+        if($i == 3){
+            $cadenaLletres .= $lletraMig;
+        }
         $cadenaLletres .= generarLletra();
     }
     return $cadenaLletres;
 }
-
+function treureValorsArray($arrayFuncionsTotal){
+    $arrayOptimitzat = [];
+    foreach ($arrayFuncionsTotal as $key => $value) {
+        if (count(array_unique(str_split($value))) <= 7 && preg_match('/^([^0-9]*)$/',($value))){
+            array_push($arrayOptimitzat, $value);
+        }
+    }
+    sort($arrayOptimitzat);
+    return $arrayOptimitzat;
+}
 
 function escriureLletresHexagon($arrayFuncions)
 {
-    if (!isset($_SESSION["lletres"])) {
-
+   
+    $comptador = 0;
+    $arrayFuncions = $arrayFuncions["internal"];
+    $arrayFuncionsOptimitzades = treureValorsArray($arrayFuncions);
+    while($comptador < 9){
         $comptador = 0;
-        while ($comptador < 3) {
-            $cadenaLletres = generar7Lletres();
-            for ($i = 0; $i < sizeof($arrayFuncions["internal"]); $i++) {
-                if (str_contains($cadenaLletres, $arrayFuncions["internal"][$i])) {
-                    $comptador++;
-                    
-                }
+        $Solucions = [];
+        $lletraMig = generarLletra();
+        $opcioLletres = generar6Lletres($lletraMig);
+
+        foreach ($arrayFuncionsOptimitzades as $key => $value) {
+            if(preg_match("/^[".$opcioLletres."]+$/",($value)) && preg_match("/".$lletraMig."/",($value))){
+                $comptador++;
+                array_push($Solucions,$value);
             }
-            if($comptador > 3){
-                $_SESSION["lletres"][] = $cadenaLletres;
+        }
+        if($comptador>=9){
+            if(!isset($_SESSION["lletres"])){
+                $_SESSION["lletres"] = str_split($opcioLletres);
+
             }
-        
+            if(!isset($_SESSION["solucions"])){
+                $_SESSION["solucions"][] = $Solucions;
+
+            }
+
+        }
     }
 }
-}
+
 $funcions = get_defined_functions();
 escriureLletresHexagon($funcions);
 
@@ -62,6 +87,13 @@ escriureLletresHexagon($funcions);
             <h1>
                 <a href=""><img src="logo.png" height="54" class="logo" alt="PHPlògic"></a>
             </h1>
+            <p><?php 
+                        
+                       if(isset($_SESSION["solucions"]) && (isset($_GET["sol"]))){
+                        
+                        echo (implode(",",($_SESSION["solucions"][0])));
+                       }
+            ?> </p>
             <!--<div class="container-notifications">
         <p class="hide" id="message" style="">MISSATGE D'ERROR</p>
     </div>-->
@@ -76,9 +108,9 @@ escriureLletresHexagon($funcions);
                     echo ("<li class='hex'>");
                     if ($key == 3) {
 
-                        echo ("<div class='hex-in'><a class='hex-link' data-lletra='n' draggable='false' id='center-letter'><p>" . $value . "</p></a></div>");
+                        echo ("<div class='hex-in'><a class='hex-link' data-lletra=".$value." draggable='false' id='center-letter'><p>" . $value . "</p></a></div>");
                     } else {
-                        echo ("<div class='hex-in'><a class='hex-link' data-lletra='e' draggable='false'><p>" . $value . "</p></a></div>
+                        echo ("<div class='hex-in'><a class='hex-link' data-lletra=".$value." draggable='false'><p>" . $value . "</p></a></div>
             </li>");
                     }
                 }
@@ -151,39 +183,7 @@ escriureLletresHexagon($funcions);
         }
     }
 
-    /*function lletresHexagon(){
-        $comptador = 0;
-        while ($comptador <7){
-        }
-    }*/
-
-    /* function generarLletres($arrayCaracters){
-        for ($i=0; $i < 8 ; $i++) { 
-            $lletra = array_rand($arrayCaracters);
-            if(isset($lletresAleatories)){
-                for ($i=0; $i < sizeof($lletresAleatories); $i++) { 
-                    if($arrayCaracters[$lletra] == $lletresAleatories[$i]){
-                        $trobat = true;
-                    }
-                }
-                if($trobat == false){
-                    $lletresAleatories[$i] = $arrayCaracters[$lletra];
-
-                }
-                else{
-                    $i--;
-                }
-            }
-            else{
-                $lletresAleatories[$i] = $arrayCaracters[$lletra];
-            }
-        }
-
-        return $lletresAleatories;
-    }*/
-
-    /*$caracters = crearArrayLletres();
-    print_r(generarLletres($caracters));*/
+   
     ?>
 </body>
 

@@ -2,32 +2,24 @@
 session_start();
 
 function comprovarParaula(){
+    if(!isset($_SESSION["resultats"])){
+        $_SESSION["resultats"];
+    }
     $paraula = $_POST["paraula"];
     $Solucions = get_defined_functions();
-    $trobat = false;
-    for ($i=0; $i < sizeof($Solucions["internal"]); $i++) {
-        if($paraula == $Solucions["internal"][$i]){
-            if(isset($_SESSION["resultats"])){
-                for ($i=0; $i < sizeof($_SESSION["resultats"]); $i++) { 
-                    if($paraula == $_SESSION["resultats"][$i]){
-                        $trobat = true;
-                    }
-                }
-                if($trobat == false){
-                    $_SESSION["resultats"][] = $paraula;
-                }
-            }
-            else{
-                $_SESSION["resultats"][] = $paraula;
-            }
-            
-            header('Location: index.php');
+    if(in_array($paraula, $Solucions['internal'])){
+        echo("entra");
+        if (!in_array($paraula, $_SESSION["resultats"])) {
+            $_SESSION["resultats"][] = $paraula;
         }
     }
+    else{
+        print_r("no hi és");
+    }
+    /*header('Location: index.php');
+    die(); */  
 }
 
 comprovarParaula();
-
-
 
 ?>
