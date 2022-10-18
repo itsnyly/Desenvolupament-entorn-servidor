@@ -1,25 +1,48 @@
 <?php 
 session_start();
-
-function comprovarParaula(){
-
-    $paraula = $_POST["paraula"];
+ /**
+  * Comprova que la paraula entrada sigui una funció de php, que contingui la lletra de mig i que no estigui repetida.
+  * @param string $paraula Paraula entrada per l'usuari.
+  */
+function comprovarParaula($paraula){
     $Solucions = get_defined_functions();
-    if(in_array($paraula, $Solucions['internal'])){
+    if(in_array($paraula, $_SESSION["solucions"][0])){
         if(isset($_SESSION["resultats"])) {
             if (!in_array($paraula, $_SESSION["resultats"])) {
                 $_SESSION["resultats"][] = $paraula;
             }
+            else{
+                header("Location: index.php?error=jahiés&paraula=$paraula", true, 303);
+                die();
+            }
         }
         else{
             $_SESSION["resultats"][] = $paraula;
-        }
-        
+        } 
     }
-    header('Location: index.php');
-    die();   
+    else if (!preg_match('/'. $_SESSION['lletres'][3].'/', ($paraula))) {
+            header("Location: index.php?error=faltalalletradelmig", true, 303);
+            die();
+    }else {
+            header("Location: index.php?error=Noesunafuncio", true, 303);
+            die();
+    }
 }
 
-comprovarParaula();
+$dadesRebudes = ($_SERVER['REQUEST_METHOD'] == 'POST');
+
+$dadesCorrectes = $dadesRebudes && isset($_REQUEST['paraula']);
+
+if ($dadesRebudes) {
+    if ($dadesCorrectes && !$_REQUEST['paraula'] == "") {
+        $paraula = $_REQUEST['paraula'];
+        header("Location: index.php?paraula=$paraula", true, 302);
+        comprovarParaula($paraula);
+        die();
+    } else {
+        header("Location: index.php", true, 303);
+        die();
+    }
+}
 
 ?>

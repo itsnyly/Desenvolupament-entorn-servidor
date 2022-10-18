@@ -3,10 +3,51 @@ session_start();
 
 date_default_timezone_set('Europe/Madrid');
 
-$data = date("Y-m-d");
-print_r($data);
+/**
+ * Comprova que el format de la data sigui el correcte.
+ * @param date $data És la data que s'entra per GET.
+ * @return bool Retorna si la data entrada té un format correcte.
+ */
+function comprovarData($data):bool{
+    $formatData = "Ymd";
+    $dataFinal =  date_create_from_format($formatData,$data);
+    return $data && ($dataFinal -> format($formatData) === $data);
+}
 
+/**
+ * Guarda la data en una sessió.
+ */
+function guardarData()
+{
+    if (isset($_GET["data"]) && !empty($_SESSION["Data"])) {
+        $dataComprovada = comprovarData($_GET["data"]);
+        if ($dataComprovada == true) {
+            $_SESSION["Data"] = $_GET["data"];
+    } 
+    }
+    elseif (empty($_SESSION["Data"])) {
+        $_SESSION["Data"] = date("Ymd");
+    }
+}
 
+srand($_SESSION["Data"]);
+
+if (!isset($_SESSION["Data"])) {
+    guardarData();
+} else {
+    $diaAntic = $_SESSION["Data"];
+    guardarData();
+    eliminarResultats();
+}
+if (!isset($_SESSION["lletres"]) || $diaAntic != $_SESSION["Data"]){
+    $funcions = get_defined_functions();
+    escriureLletresHexagon($funcions);
+}
+
+/**
+ * Genera un lletra de manera aleatòria
+ * @return string $lletra Retorna la lletra escollida aleatoriament.
+ */
 function generarLletra()
 {
     $caracters = "abcdefghijklmnopqrstuvwxyz_";
@@ -15,6 +56,12 @@ function generarLletra()
 
     return $lletra;
 }
+/**
+ * Genera 7 lletres de manera aleatòria concatenant-les i establint un lletra en la posició del mig.
+ * @param string $lletraMig És la lletra que establirem com a central.
+ * @return string $cadenaLletres Retorna una cadena amb les 7 lletres.
+ */
+
 function generar6Lletres($lletraMig)
 {
     $cadenaLletres = "";
@@ -26,6 +73,12 @@ function generar6Lletres($lletraMig)
     }
     return $cadenaLletres;
 }
+
+/**
+ * Treu les funcions que no compleixen els nostres requisits.
+ * @param array $arrayFuncionsTotal Array que conté totes les funcions de php.
+ * @return array $arrayOptimitzat Retorna un nou array amb tots els valors que compleixen els requisits
+ */
 function treureValorsArray($arrayFuncionsTotal){
     $arrayOptimitzat = [];
     foreach ($arrayFuncionsTotal as $key => $value) {
@@ -37,6 +90,10 @@ function treureValorsArray($arrayFuncionsTotal){
     return $arrayOptimitzat;
 }
 
+/**
+ * Comprova que les lletres que es mostraran tinguin la possiblitat de formar 10 noms de funcions.
+ * @param array $arrayFuncions Array de funcions php.
+ */
 function escriureLletresHexagon($arrayFuncions)
 {
    
@@ -56,10 +113,8 @@ function escriureLletresHexagon($arrayFuncions)
             }
         }
         if($comptador>=9){
-            if(!isset($_SESSION["lletres"])){
-                $_SESSION["lletres"] = str_split($opcioLletres);
+            $_SESSION["lletres"] = str_split($opcioLletres);
 
-            }
             if(!isset($_SESSION["solucions"])){
                 $_SESSION["solucions"][] = $Solucions;
 
@@ -68,9 +123,6 @@ function escriureLletresHexagon($arrayFuncions)
         }
     }
 }
-
-$funcions = get_defined_functions();
-escriureLletresHexagon($funcions);
 
 ?>
 
@@ -96,12 +148,29 @@ escriureLletresHexagon($funcions);
                         
                        if(isset($_SESSION["solucions"]) && (isset($_GET["sol"]))){
                         
-                        echo (implode(",",($_SESSION["solucions"][0])));
+                        echo "Solucions: ".(implode(",",($_SESSION["solucions"][0])));
                        }
             ?> </p>
-            <!--<div class="container-notifications">
-        <p class="hide" id="message" style="">MISSATGE D'ERROR</p>
-    </div>-->
+            <div class="container-notifications">
+                <?php 
+                 if(isset($_GET['error'])) {
+
+                    $missatgeError = $_GET['error'];
+
+                    switch ($missatgeError) {
+                        case "jahies":
+                            echo '<p class="hide" id="message">'. $_GET["paraula"].'</p>';
+                            break;
+                        case "Noesunafuncio":
+                            echo '<p class="hide" id="message">La paraula no és una funció de PHP.</p>';
+                            break;
+                        case "faltalalletradelmig":
+                            echo '<p class="hide" id="message">Falta la lletra del mig.</p>';
+                            break;
+                    }
+                }
+                ?>
+            </div>
             <div class="cursor-container">
                 <p id="input-word"><span id="test-word"></span><span id="cursor">|</span></p>
                 <input type="hidden" name="paraula" id="campText">
@@ -172,7 +241,9 @@ escriureLletresHexagon($funcions);
     </script>
 
     <?php
-
+    /**
+     * Mostra el nombre de paraules encertades.
+     */
     function mostrarResultats()
     {
         if (isset($_SESSION["resultats"])) {
@@ -181,12 +252,19 @@ escriureLletresHexagon($funcions);
             return 0;
         }
     }
+    /**
+     * Elimina les paraules encertades.
+     */
     function eliminarResultats(){
         if(isset($_SESSION["resultats"]) && (isset($_GET["neteja"]))){
             unset($_SESSION["resultats"]);
             mostrarNomsFuncions();
         }
     }
+
+    /**
+     * Mostra les paraules encertades
+     */
     function mostrarNomsFuncions()
     {
         if (isset($_SESSION["resultats"])) {
