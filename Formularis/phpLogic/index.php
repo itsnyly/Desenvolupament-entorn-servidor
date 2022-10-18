@@ -30,7 +30,7 @@ function guardarData()
     }
 }
 
-srand($_SESSION["Data"]);
+
 
 if (!isset($_SESSION["Data"])) {
     guardarData();
@@ -39,6 +39,7 @@ if (!isset($_SESSION["Data"])) {
     guardarData();
     eliminarResultats();
 }
+srand($_SESSION["Data"]);
 if (!isset($_SESSION["lletres"]) || $diaAntic != $_SESSION["Data"]){
     $funcions = get_defined_functions();
     escriureLletresHexagon($funcions);
