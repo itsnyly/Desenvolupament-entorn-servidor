@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+date_default_timezone_set('Europe/Madrid');
+
+$data = date("Y-m-d");
+print_r($data);
+
 
 function generarLletra()
 {
@@ -38,7 +43,7 @@ function escriureLletresHexagon($arrayFuncions)
     $comptador = 0;
     $arrayFuncions = $arrayFuncions["internal"];
     $arrayFuncionsOptimitzades = treureValorsArray($arrayFuncions);
-    while($comptador < 9){
+    while($comptador < 10){
         $comptador = 0;
         $Solucions = [];
         $lletraMig = generarLletra();
@@ -176,12 +181,19 @@ escriureLletresHexagon($funcions);
             return 0;
         }
     }
+    function eliminarResultats(){
+        if(isset($_SESSION["resultats"]) && (isset($_GET["neteja"]))){
+            unset($_SESSION["resultats"]);
+            mostrarNomsFuncions();
+        }
+    }
     function mostrarNomsFuncions()
     {
         if (isset($_SESSION["resultats"])) {
             return implode(" ", $_SESSION["resultats"]);
         }
     }
+    eliminarResultats();
 
    
     ?>
