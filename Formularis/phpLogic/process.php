@@ -31,11 +31,11 @@ function comprovarParaula($paraula){
 
 $dadesRebudes = ($_SERVER['REQUEST_METHOD'] == 'POST');
 
-$dadesCorrectes = $dadesRebudes && isset($_REQUEST['paraula']);
+$dadesCorrectes = $dadesRebudes && isset($_POST['paraula']);
 
 if ($dadesRebudes) {
-    if ($dadesCorrectes && !$_REQUEST['paraula'] == "") {
-        $paraula = $_REQUEST['paraula'];
+    if ($dadesCorrectes && !$_POST['paraula'] == "") {
+        $paraula = $_POST['paraula'];
         header("Location: index.php?paraula=$paraula", true, 302);
         comprovarParaula($paraula);
         die();
