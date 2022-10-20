@@ -1,11 +1,14 @@
 <?php
 session_start();
-
 date_default_timezone_set('Europe/Madrid');
 
-$data = date("Y-m-d");
-print_r($data);
+function guardarData(){
 
+if(!isset($_SESSION["data"])){
+    $_SESSION["data"]= date("Y-m-d");
+}
+
+}
 
 function generarLletra()
 {
@@ -39,7 +42,6 @@ function treureValorsArray($arrayFuncionsTotal){
 
 function escriureLletresHexagon($arrayFuncions)
 {
-   
     $comptador = 0;
     $arrayFuncions = $arrayFuncions["internal"];
     $arrayFuncionsOptimitzades = treureValorsArray($arrayFuncions);
@@ -68,9 +70,12 @@ function escriureLletresHexagon($arrayFuncions)
         }
     }
 }
-
+guardarData();
 $funcions = get_defined_functions();
+
 escriureLletresHexagon($funcions);
+
+
 
 ?>
 
@@ -78,7 +83,7 @@ escriureLletresHexagon($funcions);
 <html lang="ca">
 
 <head>
-    <title>PHPògic</title>
+    <title>PHPLògic</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Juga al PHPògic.">
@@ -96,7 +101,7 @@ escriureLletresHexagon($funcions);
                         
                        if(isset($_SESSION["solucions"]) && (isset($_GET["sol"]))){
                         
-                        echo (implode(",",($_SESSION["solucions"][0])));
+                        echo "Solucions: ". (implode(",",($_SESSION["solucions"][0])));
                        }
             ?> </p>
             <!--<div class="container-notifications">
@@ -106,6 +111,12 @@ escriureLletresHexagon($funcions);
                 <p id="input-word"><span id="test-word"></span><span id="cursor">|</span></p>
                 <input type="hidden" name="paraula" id="campText">
             </div>
+            <p style="color:red"> <?php 
+                        if(isset($_SESSION["existencia"])){
+                            echo $_SESSION["existencia"];
+                        }
+            
+            ?></p>
             <div class="container-hexgrid">
                 <?php
                 echo ("<ul id='hex-grid'>");

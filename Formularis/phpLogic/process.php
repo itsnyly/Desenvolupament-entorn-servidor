@@ -14,10 +14,16 @@ function comprovarParaula(){
         else{
             $_SESSION["resultats"][] = $paraula;
         }
-        
+        $_SESSION["existencia"] = "";   
+    }
+    else{
+        $_SESSION["existencia"] = "La paraula no és una funció de PHP";
     }
     header('Location: index.php');
     die();   
+}
+function ErrorsParaula($paraula){
+
 }
 
 comprovarParaula();
