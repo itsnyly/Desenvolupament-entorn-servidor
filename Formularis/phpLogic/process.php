@@ -18,7 +18,8 @@ function comprovarParaula($paraula){
         }
         else{
             $_SESSION["resultats"][] = $paraula;
-        } 
+        }
+        
     }
     else if (!preg_match('/'. $_SESSION['lletres'][3].'/', ($paraula))) {
             header("Location: index.php?error=faltalalletradelmig", true, 303);
@@ -27,6 +28,9 @@ function comprovarParaula($paraula){
             header("Location: index.php?error=Noesunafuncio", true, 303);
             die();
     }
+}
+function ErrorsParaula($paraula){
+
 }
 
 $dadesRebudes = ($_SERVER['REQUEST_METHOD'] == 'POST');
