@@ -41,6 +41,10 @@ if (!isset($_SESSION["Data"])) {
     }
 }
 srand($_SESSION["Data"]);
+
+if (isset($_SESSION["resultats"]) && (isset($_GET["neteja"]))){
+    unset($_SESSION["resultats"]);
+}
 if (!isset($_SESSION["lletres"]) || $diaAntic != $_SESSION["Data"]) {
     $funcions = get_defined_functions();
     escriureLletresHexagon($funcions);
@@ -197,7 +201,7 @@ function escriureLletresHexagon($arrayFuncions)
                 <button id="submit-button" type="submit" title="Introdueix la paraula">Introdueix</button>
             </div>
             <div class="scoreboard">
-                <div>Has trobat <?php print_r(mostrarResultats()) ?> <span id="found-suffix">funcions</span> <strong><?php print_r(mostrarNomsFuncions()) ?></strong><span id="discovered-text">.</span>
+                <div>Has trobat <?php print_r(mostrarResultats()) ?> <span id="found-suffix"><?php if(mostrarResultats() == 1){echo " funció";}else{echo " funcions";}?></span> <strong><?php print_r(mostrarNomsFuncions()) ?></strong><span id="discovered-text">.</span>
                 </div>
                 <div id="score"></div>
                 <div id="level"></div>
@@ -248,17 +252,7 @@ function escriureLletresHexagon($arrayFuncions)
             return 0;
         }
     }
-    /**
-     * Elimina les paraules encertades.
-     */
-    function eliminarResultats()
-    {
-        if (isset($_SESSION["resultats"]) && (isset($_GET["neteja"]))) {
-            unset($_SESSION["resultats"]);
-            mostrarNomsFuncions();
-        }
-    }
-
+   
     /**
      * Mostra les paraules encertades
      */
@@ -268,7 +262,6 @@ function escriureLletresHexagon($arrayFuncions)
             return implode(" ", $_SESSION["resultats"]);
         }
     }
-    eliminarResultats();
 
     ?>
 </body>
