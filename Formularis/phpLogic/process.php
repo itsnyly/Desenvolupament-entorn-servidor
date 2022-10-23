@@ -29,9 +29,7 @@ function comprovarParaula($paraula){
             die();
     }
 }
-function ErrorsParaula($paraula){
 
-}
 
 $dadesRebudes = ($_SERVER['REQUEST_METHOD'] == 'POST');
 
