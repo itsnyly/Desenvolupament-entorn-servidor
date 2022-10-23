@@ -37,7 +37,11 @@ if (!isset($_SESSION["Data"])) {
 } else {
     $diaAntic = $_SESSION["Data"];
     guardarData();
-    eliminarResultats();
+    //unset($_SESSION["resultats"]);
+    if(!isset($_SESSION["resultats"]) || $diaAntic != $_SESSION["Data"]){
+        unset($_SESSION["resultats"]);
+
+    }
 }
 srand($_SESSION["Data"]);
 if (!isset($_SESSION["lletres"]) || $diaAntic != $_SESSION["Data"]){
@@ -115,11 +119,7 @@ function escriureLletresHexagon($arrayFuncions)
         }
         if($comptador>=9){
             $_SESSION["lletres"] = str_split($opcioLletres);
-
-            if(!isset($_SESSION["solucions"])){
-                $_SESSION["solucions"][] = $Solucions;
-
-            }
+            $_SESSION["solucions"] = $Solucions;
 
         }
     }
@@ -149,7 +149,7 @@ function escriureLletresHexagon($arrayFuncions)
                         
                        if(isset($_SESSION["solucions"]) && (isset($_GET["sol"]))){
                         
-                        echo "Solucions: ".(implode(",",($_SESSION["solucions"][0])));
+                        echo "Solucions: ".(implode(",",($_SESSION["solucions"])));
                        }
             ?> </p>
             <div class="container-notifications">
@@ -251,6 +251,7 @@ function escriureLletresHexagon($arrayFuncions)
             return sizeof($_SESSION["resultats"]);
         } else {
             return 0;
+            
         }
     }
     /**
