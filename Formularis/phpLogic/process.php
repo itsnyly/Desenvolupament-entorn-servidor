@@ -6,7 +6,7 @@ session_start();
   */
 function comprovarParaula($paraula){
     $Solucions = get_defined_functions();
-    if(in_array($paraula, $_SESSION["solucions"][0])){
+    if(in_array($paraula, $_SESSION["solucions"])){
         if(isset($_SESSION["resultats"])) {
             if (!in_array($paraula, $_SESSION["resultats"])) {
                 $_SESSION["resultats"][] = $paraula;
@@ -29,9 +29,7 @@ function comprovarParaula($paraula){
             die();
     }
 }
-function ErrorsParaula($paraula){
 
-}
 
 $dadesRebudes = ($_SERVER['REQUEST_METHOD'] == 'POST');
 
