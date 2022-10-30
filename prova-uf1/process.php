@@ -1,22 +1,23 @@
 <?php
 session_start();
 $_SESSION["nomUsuari"] = "";
+
 if(isset($_POST["method"]) && $_POST["method"] == "signup"){
     if(isset($_POST["nom"]) && isset($_POST["usuari"]) && isset($_POST["contrasenya"])){
         if($_POST["nom"] != "" && $_POST["usuari"] != "" && $_POST["contrasenya"] != ""){
         $usuaris = llegeix("users.json");
-        if(!isset($usuaris["usuari"])){
+        if(!isset($usuaris[$_POST["usuari"]])){
             $_SESSION["nomUsuari"] = $_POST["nom"];
             $usuaris[$_POST["usuari"]] = [$_POST["nom"],$_POST["usuari"],$_POST["contrasenya"]];
             escriu($usuaris,"users.json");
             header("Location: hola.php",true,302);
         }
         else{
-           header("Location: index.php",true,303);
+            header("Location: index.php?error=usuariExistent",true,303);
         }
     }
     else{
-         header("Location: index.php",true,303);
+        header("Location: index.php?error=campsBuits",true,303);
     }
     }
     else{
@@ -26,7 +27,7 @@ if(isset($_POST["method"]) && $_POST["method"] == "signup"){
     
 elseif(isset($_POST["method"]) && $_POST["method"] == "signin"){
     if(isset($_POST["correu"]) && isset($_POST["password"])){
-        comprovarAutenticacio($_POST["correu"]);
+        comprovarAutenticacio($_POST["correu"],$_POST["password"]);
     }
 }
 else{
@@ -38,16 +39,20 @@ else{
  * Comprova que l'usuari existeix dins del llistat d'usuaris registrats
  * @param string $usuari l'usuari que es comprovarà
  */
-function comprovarAutenticacio($usuari){
+function comprovarAutenticacio($usuari,$password){
    
     $resultatLectura = llegeix("users.json");
     if(isset($resultatLectura[$usuari])){
-        $_SESSION["nomUsuari"] = $resultatLectura[$usuari][0];
-       
-        header("Location: hola.php", true, 302);
+        if($resultatLectura[$usuari][2] == $password){
+            $_SESSION["nomUsuari"] = $resultatLectura[$usuari][0];
+            header("Location: hola.php", true, 302);
+        }
+        else{
+            header("Location: index.php?error=passwordError", true, 303);
+        }
     }
     else{
-        header("Location: index.php", true, 303);
+        header("Location: index.php?error=correuError", true, 303);
     }
 }
 

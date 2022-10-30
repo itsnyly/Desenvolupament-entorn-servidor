@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -46,6 +49,31 @@
         </div>
     </div>
 </body>
+<br>
+<?php
+    if(isset($_GET["error"])){
+        switch ($_GET["error"]) {
+            case 'usuariExistent':
+                echo "<div class='error'><p>L'usuari ja existeix</p></div>";
+                break;
+            case 'campsBuits':
+                echo "<div class='error'><p>Els camps no poden estar buits</p></div>";
+                break;
+            case 'passwordError':
+                echo "<div class='error'><p>La contrasenya és incorrecte</p></div>";
+                break;  
+            case 'correuError':
+                echo "<div class='error'><p>El correu és incorrecte</p></div>";
+                break;
+            default:
+                echo "";
+                break;
+        }
+    }
+    else{
+        echo "";
+    }
+?>
 <script>
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
