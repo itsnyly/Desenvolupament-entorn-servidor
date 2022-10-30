@@ -1,8 +1,37 @@
-[
-    "ntorrent8@boscdelacoma.cat",
-    [
+{
+    "ntorrent8@boscdelacoma.cat": [
         "nil",
         "ntorrent8@boscdelacoma.cat",
         "patata"
+    ],
+    "ptorres8@boscdelacoma.cat": [
+        "pere",
+        "ptorres8@boscdelacoma.cat",
+        "patata"
+    ],
+    "mpont8@boscdelacoma.cat": [
+        "",
+        "mpont8@boscdelacoma.cat",
+        "patata"
+    ],
+    "": [
+        "ss",
+        "",
+        ""
+    ],
+    "prova@boscdelacoma.cat": [
+        "prova",
+        "prova@boscdelacoma.cat",
+        ""
+    ],
+    "prova@gmail.com": [
+        "",
+        "prova@gmail.com",
+        ""
+    ],
+    "slkfsl@sfafs.cat": [
+        "",
+        "slkfsl@sfafs.cat",
+        ""
     ]
-]
+}

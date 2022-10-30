@@ -16,8 +16,8 @@ session_start();
     <div class="welcome-container">
         <h1>Benvingut!</h1>
         <div>Hola <?php echo $_SESSION["nomUsuari"] ?>, les teves darreres connexions són:</div>
-        <form action="#">
-            <button>Tanca la sessió</button>
+        <form action="process.php" method="post">
+            <button type="submit">Tanca la sessió</button>
         </form>
     </div>
 </div>
