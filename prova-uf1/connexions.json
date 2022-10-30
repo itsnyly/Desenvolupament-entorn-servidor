@@ -1,0 +1,86 @@
+[
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 19:38:35",
+        "estat": "creacio_fallida"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 19:38:51",
+        "estat": "contrasenya_incorrecte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 19:39:04",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 20:09:59",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 20:41:26",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 20:42:27",
+        "estat": "tancar_sessio"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 20:45:26",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 20:46:15",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "",
+        "data": "2022-10-30 20:50:14",
+        "estat": "usuari_incorrecte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "alex@alex.com",
+        "data": "2022-10-30 20:50:47",
+        "estat": "nou_usuari"
+    },
+    {
+        "ip": "::1",
+        "usuari": "alex@alex.com",
+        "data": "2022-10-30 20:51:52",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "alex@alex.com",
+        "data": "2022-10-30 20:57:36",
+        "estat": "contrasenya_incorrecte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "alex@alex.com",
+        "data": "2022-10-30 20:57:54",
+        "estat": "autenticacio_correcte"
+    },
+    {
+        "ip": "::1",
+        "usuari": "ntorrent8@boscdelacoma.cat",
+        "data": "2022-10-30 21:25:15",
+        "estat": "autenticacio_correcte"
+    }
+]

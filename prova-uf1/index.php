@@ -1,5 +1,10 @@
 <?php
     session_start();
+    if(isset($_SESSION["tempsMesMinut"])){
+        if(time() < $_SESSION["tempsMesMinut"]){
+            header("Location: hola.php",true,302);
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="ca">
