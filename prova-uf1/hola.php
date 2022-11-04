@@ -7,13 +7,27 @@ session_start();
  * @param string $file
  * @return array
  */
-function llegeix(string $file) : array
+function llegeix(string $usuari)
 {
-    $var = [];
-    if ( file_exists($file) ) {
-        $var = json_decode(file_get_contents($file), true);
+    //connexió dins block try-catch:
+    //  prova d'executar el contingut del try
+    //  si falla executa el catch
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $pdo = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+    } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
     }
-    return $var;
+  
+    //preparem i executem la consulta
+    $query = $pdo->prepare("select * FROM connexions WHERE correu_usuari ='".$usuari."'");
+    $query->execute();
+    $row = $query->fetch();
+    return $row;
 }
 
 /**

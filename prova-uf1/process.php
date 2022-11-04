@@ -5,13 +5,12 @@ $_SESSION["nomUsuari"] = "";
 if(isset($_POST["method"]) && $_POST["method"] == "signup"){
     if(isset($_POST["nom"]) && isset($_POST["usuari"]) && isset($_POST["contrasenya"])){
         if($_POST["nom"] != "" && $_POST["usuari"] != "" && $_POST["contrasenya"] != ""){
-        $usuaris = llegeix("users.json");
-            if(!isset($usuaris[$_POST["usuari"]])){
+            $usuariTrobat = llegeix($_POST["usuari"]);
+            if($usuariTrobat == null){
                 $_SESSION["nomUsuari"] = $_POST["nom"];
                 $_SESSION["correu"] = $_POST["usuari"];
                 $_SESSION["registre"] = 1;
-                $usuaris[$_POST["usuari"]] = [$_POST["nom"],$_POST["usuari"],$_POST["contrasenya"]];
-                escriu($usuaris,"users.json");
+                escriu($_POST["nom"],$_POST["usuari"],$_POST["contrasenya"]);
                 $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $_POST["usuari"],"data" => date("Y-m-d H:i:s"),"estat" => "nou_usuari");
                 afegirConnexio($connexio);
                 header("Location: hola.php",true,302);
@@ -87,13 +86,27 @@ function afegirConnexio($connexioEntrant){
  * @param string $file
  * @return array
  */
-function llegeix(string $file) : array
+function llegeix(string $usuari)
 {
-    $var = [];
-    if ( file_exists($file) ) {
-        $var = json_decode(file_get_contents($file), true);
+    //connexió dins block try-catch:
+    //  prova d'executar el contingut del try
+    //  si falla executa el catch
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $pdo = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+    } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
     }
-    return $var;
+  
+    //preparem i executem la consulta
+    $query = $pdo->prepare("select * FROM usuaris WHERE correu_usuari ='".$usuari."'");
+    $query->execute();
+    $row = $query->fetch();
+    return $row;
 }
 
 /**
@@ -102,8 +115,27 @@ function llegeix(string $file) : array
  * @param array $dades
  * @param string $file
  */
-function escriu(array $dades, string $file): void
+function escriu(string $nom,string $correu,string $password): void
 {
-    file_put_contents($file,json_encode($dades, JSON_PRETTY_PRINT));
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+      } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
+      }
+      
+      try {
+        //cadascun d'aquests interrogants serà substituit per un paràmetre.
+          $stmt = $dbh->prepare("INSERT INTO usuaris (nom_usuari, correu_usuari, password_usuari) VALUES(".$nom.",".$correu.",".$password.")"); 
+        //a l'execució de la sentència li passem els paràmetres amb un array 
+        $stmt->execute( array('13', 'caco')); 
+        echo "Insertat!"; 
+      } catch(PDOException $e) { 
+        print "Error!: " . $e->getMessage() . " Desfem</br>"; 
+      } 
 }
 ?>
