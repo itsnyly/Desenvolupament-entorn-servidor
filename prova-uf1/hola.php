@@ -24,9 +24,9 @@ function llegeix(string $usuari)
     }
   
     //preparem i executem la consulta
-    $query = $pdo->prepare("select * FROM connexions WHERE correu_usuari ='".$usuari."'");
-    $query->execute();
-    $row = $query->fetch();
+    $query = $pdo->prepare("select ip_connexio, data_connexio, estat_connexio FROM connexions WHERE correu_usuari = ? AND estat_connexio IN ('autenticacio_correcte','nou_usuari')");
+    $query->execute(array($usuari));
+    $row = $query->fetchAll();
     return $row;
 }
 
@@ -61,7 +61,7 @@ function controlarTempsSessio(){
     else{
         if(time() > $_SESSION["tempsMesMinut"]){
             $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $_SESSION["correu"],"data" => date("Y-m-d H:i:s",time()),"estat" => "tancar_sessio");
-            afegirConnexio($connexio);
+            //afegirConnexio($connexio);
             session_destroy();
             header("Location: index.php",true,302);
         }
@@ -93,14 +93,15 @@ if(isset($_SESSION["registre"])){
         <h1>Benvingut!</h1>
         <div>Hola <?php echo $_SESSION["nomUsuari"] ?>, les teves darreres connexions són: 
         <?php
-           $connexions = llegeix("connexions.json");
-           echo "<br>";
+           $connexions = llegeix($_SESSION["correu"]);
+           if($connexions != null){
+            echo "<br>";
             foreach ($connexions as $key => $value) {
-                if($value["usuari"] == $_SESSION["correu"] && ($value["estat"] == "nou_usuari" || $value["estat"] == "autenticacio_correcte")){
-                    echo $value["ip"] . " " . $value["data"] . " " . $value["estat"] . " ";
+                    echo $value["ip_connexio"] . " " . $value["data_connexio"] . " " . $value["estat_connexio"] . " ";
                     echo "<br>";
-                }
             }
+           }
+           
         ?>
         </div>
         <form action="process.php" method="post">

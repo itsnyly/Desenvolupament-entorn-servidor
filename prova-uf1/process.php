@@ -10,14 +10,12 @@ if(isset($_POST["method"]) && $_POST["method"] == "signup"){
                 $_SESSION["nomUsuari"] = $_POST["nom"];
                 $_SESSION["correu"] = $_POST["usuari"];
                 $_SESSION["registre"] = 1;
-                escriu($_POST["nom"],$_POST["usuari"],$_POST["contrasenya"]);
-                $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $_POST["usuari"],"data" => date("Y-m-d H:i:s"),"estat" => "nou_usuari");
-                afegirConnexio($connexio);
+                escriuUsuari($_POST["nom"],$_POST["usuari"],$_POST["contrasenya"]);
+                escriuConnexio($_SERVER["REMOTE_ADDR"],$_POST["usuari"],date("Y-m-d H:i:s"),"nou_usuari");
                 header("Location: hola.php",true,302);
             }
             else{
-                $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $_POST["usuari"],"data" => date("Y-m-d H:i:s"),"estat" => "creacio_fallida");
-                afegirConnexio($connexio);
+                escriuConnexio($_SERVER["REMOTE_ADDR"],$_POST["usuari"],date("Y-m-d H:i:s"),"creacio_fallida");
                 header("Location: index.php?error=usuariExistent",true,303);
             }
         }
@@ -47,26 +45,23 @@ else{
  */
 function comprovarAutenticacio($usuari,$password){
    
-    $resultatLectura = llegeix("users.json");
-    if(isset($resultatLectura[$usuari])){
-        if($resultatLectura[$usuari][2] == $password){
-            $_SESSION["nomUsuari"] = $resultatLectura[$usuari][0];
+    $usuariTrobat = llegeix($_POST["correu"]);
+    if($usuariTrobat != null){
+        if($usuariTrobat["password_usuari"] == md5($password)){
+            $_SESSION["nomUsuari"] = $usuariTrobat["nom_usuari"];
             $_SESSION["correu"] = $usuari;
             $_SESSION["registre"] = 1;
-            $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $usuari,"data" => date("Y-m-d H:i:s"),"estat" => "autenticacio_correcte");
-            afegirConnexio($connexio);
-            header("Location: hola.php", true, 302);
+            //escriuConnexio($_SERVER["REMOTE_ADDR"],$_POST["correu"],date("Y-m-d H:i:s"),"autenticacio_correcte");
+            //header("Location: hola.php", true, 302);
         }
         else{
-            $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $usuari,"data" => date("Y-m-d H:i:s"),"estat" => "contrasenya_incorrecte");
-            afegirConnexio($connexio);
+            escriuConnexio($_SERVER["REMOTE_ADDR"],$_POST["correu"],date("Y-m-d H:i:s"),"contrasenya_incorrecte");
             header("Location: index.php?error=passwordError", true, 303);
         }
     }
     else{
-        $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $usuari,"data" => date("Y-m-d H:i:s"),"estat" => "usuari_incorrecte");
-        afegirConnexio($connexio);
-        header("Location: index.php?error=correuError", true, 303);
+        escriuConnexio($_SERVER["REMOTE_ADDR"],$_POST["correu"],date("Y-m-d H:i:s"),"usuari_incorrecte");
+        //header("Location: index.php?error=correuError", true, 303);
     }
 }
 
@@ -75,9 +70,26 @@ function comprovarAutenticacio($usuari,$password){
  * @param string $connexioEntrant la connexió que es guardarà
  */
 function afegirConnexio($connexioEntrant){
-    $connexions = llegeix("connexions.json");
-    $connexions[] = $connexioEntrant;
-    escriu($connexions,"connexions.json");
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+      } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
+      }
+      
+      try {
+        //cadascun d'aquests interrogants serà substituit per un paràmetre.
+        $stmt = $dbh->prepare("INSERT INTO usuaris (nom_usuari, correu_usuari, password_usuari) VALUES(?,?,md5(?))"); 
+        //a l'execució de la sentència li passem els paràmetres amb un array 
+        $stmt->execute( array($nom, $correu, $password)); 
+      } catch(PDOException $e) { 
+        print "Error!: " . $e->getMessage() . " Desfem</br>"; 
+      } 
+    //escriu($connexions,"connexions.json");
 }
 
 /**
@@ -103,19 +115,26 @@ function llegeix(string $usuari)
     }
   
     //preparem i executem la consulta
-    $query = $pdo->prepare("select * FROM usuaris WHERE correu_usuari ='".$usuari."'");
-    $query->execute();
-    $row = $query->fetch();
-    return $row;
+    $query = $pdo->prepare("select nom_usuari, correu_usuari, password_usuari FROM usuaris WHERE correu_usuari = ?");
+    $resultat = $query->execute(array($usuari));
+    print_r($resultat);
+    if(!$resultat){
+      return null;
+    }
+    else{
+      $row = $query->fetch();
+      return $row;
+    }
+ 
 }
 
 /**
- * Guarda les dades a un fitxer
+ * Guarda les dades d'un usuari a la base de dades
  *
  * @param array $dades
  * @param string $file
  */
-function escriu(string $nom,string $correu,string $password): void
+function escriuUsuari(string $nom,string $correu,string $password): void
 {
     try {
         $hostname = "localhost";
@@ -130,10 +149,38 @@ function escriu(string $nom,string $correu,string $password): void
       
       try {
         //cadascun d'aquests interrogants serà substituit per un paràmetre.
-          $stmt = $dbh->prepare("INSERT INTO usuaris (nom_usuari, correu_usuari, password_usuari) VALUES(".$nom.",".$correu.",".$password.")"); 
+        $stmt = $dbh->prepare("INSERT INTO usuaris (nom_usuari, correu_usuari, password_usuari) VALUES(?,?,md5(?))"); 
         //a l'execució de la sentència li passem els paràmetres amb un array 
-        $stmt->execute( array('13', 'caco')); 
-        echo "Insertat!"; 
+        $stmt->execute( array($nom, $correu, $password)); 
+      } catch(PDOException $e) { 
+        print "Error!: " . $e->getMessage() . " Desfem</br>"; 
+      } 
+}
+
+/**
+ * Guarda les dades d'una connexió a la base de dades
+ *
+ * @param array $dades
+ * @param string $file
+ */
+function escriuConnexio(string $ip,string $usuari,string $data,string $estat): void
+{
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+      } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
+      }
+      
+      try {
+        //cadascun d'aquests interrogants serà substituit per un paràmetre.
+        $stmt = $dbh->prepare("INSERT INTO connexions (ip_connexio, correu_usuari, data_connexio, estat_connexio) VALUES(?,?,?,?)"); 
+        //a l'execució de la sentència li passem els paràmetres amb un array 
+        $stmt->execute( array($ip, $usuari, $data, $estat)); 
       } catch(PDOException $e) { 
         print "Error!: " . $e->getMessage() . " Desfem</br>"; 
       } 
