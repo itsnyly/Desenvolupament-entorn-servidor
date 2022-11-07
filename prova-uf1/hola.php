@@ -2,10 +2,10 @@
 session_start();
 
 /**
- * Llegeix les dades del fitxer. Si el document no existeix torna un array buit.
+ * Llegeix les dades de la taula usuaris. Retorna els resultats.
  *
- * @param string $file
- * @return array
+ * @param string $usuari
+ * @return $row
  */
 function llegeix(string $usuari)
 {
@@ -30,25 +30,28 @@ function llegeix(string $usuari)
     return $row;
 }
 
-/**
- * Guarda les dades a un fitxer
- *
- * @param array $dades
- * @param string $file
- */
-function escriu(array $dades, string $file): void
-{
-    file_put_contents($file,json_encode($dades, JSON_PRETTY_PRINT));
-}
 
-/**
- * Escriu tant els intents de connexió com les connexions correctes que ha realitzat l'usuari
- * @param string $connexioEntrant la connexió que es guardarà
- */
-function afegirConnexio($connexioEntrant){
-    $connexions = llegeix("connexions.json");
-    $connexions[] = $connexioEntrant;
-    escriu($connexions,"connexions.json");
+function escriuConnexio(string $ip,string $usuari,string $data,string $estat): void
+{
+    try {
+        $hostname = "localhost";
+        $dbname = "dwes-niltorrent-autpdo";
+        $username = "dwes-user";
+        $pw = "dwes-pass";
+        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
+      } catch (PDOException $e) {
+        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
+        exit;
+      }
+      
+      try {
+        //cadascun d'aquests interrogants serà substituit per un paràmetre.
+        $stmt = $dbh->prepare("INSERT INTO connexions (ip_connexio, correu_usuari, data_connexio, estat_connexio) VALUES(?,?,?,?)"); 
+        //a l'execució de la sentència li passem els paràmetres amb un array 
+        $stmt->execute( array($ip, $usuari, $data, $estat)); 
+      } catch(PDOException $e) { 
+        print "Error!: " . $e->getMessage() . " Desfem</br>"; 
+      } 
 }
 
 /**
@@ -60,8 +63,7 @@ function controlarTempsSessio(){
     }
     else{
         if(time() > $_SESSION["tempsMesMinut"]){
-            $connexio = array("ip" => $_SERVER["REMOTE_ADDR"],"usuari" => $_SESSION["correu"],"data" => date("Y-m-d H:i:s",time()),"estat" => "tancar_sessio");
-            //afegirConnexio($connexio);
+            EscriuConnexio($_SERVER["REMOTE_ADDR"],$_SESSION["correu"],date("Y-m-d H:i:s",time()),"tancar_sessio");
             session_destroy();
             header("Location: index.php",true,302);
         }
