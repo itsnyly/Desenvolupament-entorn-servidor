@@ -91,7 +91,6 @@ function llegeix(string $usuari)
     //preparem i executem la consulta
     $query = $pdo->prepare("select nom_usuari, correu_usuari, password_usuari FROM usuaris WHERE correu_usuari = ?");
     $resultat = $query->execute(array($usuari));
-    print_r($resultat);
     if(!$resultat){
       return null;
     }
