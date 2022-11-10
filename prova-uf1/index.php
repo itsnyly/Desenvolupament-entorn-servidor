@@ -70,6 +70,9 @@
             case 'correuError':
                 echo "<div class='error'><p>El correu és incorrecte</p></div>";
                 break;
+            case 'ConnexioFallida':
+                echo "<div class='error'><p>No s'ha pogut connectar a la base de dades</p></div>";
+                break;
             default:
                 echo "";
                 break;

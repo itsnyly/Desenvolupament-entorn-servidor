@@ -1,5 +1,6 @@
 <?php 
 session_start();
+include_once("connexio.php");
 
 /**
  * Llegeix les dades de la taula usuaris. Retorna els resultats.
@@ -9,20 +10,7 @@ session_start();
  */
 function llegeix(string $usuari)
 {
-    //connexió dins block try-catch:
-    //  prova d'executar el contingut del try
-    //  si falla executa el catch
-    try {
-        $hostname = "localhost";
-        $dbname = "dwes-niltorrent-autpdo";
-        $username = "dwes-user";
-        $pw = "dwes-pass";
-        $pdo = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
-    } catch (PDOException $e) {
-        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
-        exit;
-    }
-  
+    $pdo = connexio();
     //preparem i executem la consulta
     $query = $pdo->prepare("select ip_connexio, data_connexio, estat_connexio FROM connexions WHERE correu_usuari = ? AND estat_connexio IN ('autenticacio_correcte','nou_usuari')");
     $query->execute(array($usuari));
@@ -30,19 +18,17 @@ function llegeix(string $usuari)
     return $row;
 }
 
-
+/**
+ * Guarda les dades d'una connexió a la base de dades
+ *
+ * @param string $ip
+ * @param string $usuari
+ * @param string $data
+ * @param string $estat
+ */
 function escriuConnexio(string $ip,string $usuari,string $data,string $estat): void
 {
-    try {
-        $hostname = "localhost";
-        $dbname = "dwes-niltorrent-autpdo";
-        $username = "dwes-user";
-        $pw = "dwes-pass";
-        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
-      } catch (PDOException $e) {
-        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
-        exit;
-      }
+    $dbh = connexio();
       
       try {
         //cadascun d'aquests interrogants serà substituit per un paràmetre.
