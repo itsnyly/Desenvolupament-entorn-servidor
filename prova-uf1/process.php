@@ -1,5 +1,7 @@
 <?php
 session_start();
+include_once("connexio.php");
+
 $_SESSION["nomUsuari"] = "";
 
 if(isset($_POST["method"]) && $_POST["method"] == "signup"){
@@ -40,7 +42,7 @@ else{
 }
 
 /**
- * Comprova que l'usuari existeix a la taula d'usuaris
+ * Comprova que l'usuari existeix a la taula d'usuaris i comprova si les credencials són correctes
  * @param string $usuari l'usuari que es comprovarà
  * @param string $password la contrasenya que es comprovarà
  */
@@ -74,19 +76,7 @@ function comprovarAutenticacio($usuari,$password){
  */
 function llegeix(string $usuari)
 {
-    //connexió dins block try-catch:
-    //  prova d'executar el contingut del try
-    //  si falla executa el catch
-    try {
-        $hostname = "localhost";
-        $dbname = "dwes-niltorrent-autpdo";
-        $username = "dwes-user";
-        $pw = "dwes-pass";
-        $pdo = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
-    } catch (PDOException $e) {
-        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
-        exit;
-    }
+    $pdo = connexio();
   
     //preparem i executem la consulta
     $query = $pdo->prepare("select nom_usuari, correu_usuari, password_usuari FROM usuaris WHERE correu_usuari = ?");
@@ -110,16 +100,7 @@ function llegeix(string $usuari)
  */
 function escriuUsuari(string $nom,string $correu,string $password): void
 {
-    try {
-        $hostname = "localhost";
-        $dbname = "dwes-niltorrent-autpdo";
-        $username = "dwes-user";
-        $pw = "dwes-pass";
-        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
-      } catch (PDOException $e) {
-        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
-        exit;
-      }
+    $dbh = connexio();
       
       try {
         //cadascun d'aquests interrogants serà substituit per un paràmetre.
@@ -141,16 +122,7 @@ function escriuUsuari(string $nom,string $correu,string $password): void
  */
 function escriuConnexio(string $ip,string $usuari,string $data,string $estat): void
 {
-    try {
-        $hostname = "localhost";
-        $dbname = "dwes-niltorrent-autpdo";
-        $username = "dwes-user";
-        $pw = "dwes-pass";
-        $dbh = new PDO ("mysql:host=$hostname;dbname=$dbname","$username","$pw");
-      } catch (PDOException $e) {
-        echo "Failed to get DB handle: " . $e->getMessage() . "\n";
-        exit;
-      }
+    $dbh = connexio();
       
       try {
         //cadascun d'aquests interrogants serà substituit per un paràmetre.
