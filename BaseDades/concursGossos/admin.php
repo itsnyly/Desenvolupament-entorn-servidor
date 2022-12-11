@@ -11,6 +11,9 @@ if(!isset($_SESSION["acces"]))
     exit();
 }
 
+/**
+ * Mostra els gossos que participen al concurs
+ */
 function mostrar_concursants(){
     $gossos = Gos::get_all_gossos();
     if($gossos){
@@ -32,13 +35,16 @@ function mostrar_concursants(){
     }
     
 }
-
+/**
+ * Mostra les fases del concurs
+ */
 function mostrar_fases(){
     $fases = Fase::get_all_fases();
     if($fases){
         for ($i = 0; $i < sizeof($fases); $i++) {
             echo "<form action='./controlador/adminProcess.php' method='post' class='fase-row'>";
             echo "<input type='hidden' name='method' value='modificarFase'/>";
+            echo "<input type='hidden' name='idFase' value='{$fases[$i]['id_fase']}'>";
             echo "Fase <input type='text' name='id' value='{$fases[$i]['id_fase']}' disabled style='width: 3em'>";
             echo "del <input type='date' name='dataInici' placeholder='Inici' value='{$fases[$i]['dataInici']}'>";
             echo "al <input type='date' name='dataFinal' placeholder='Fi' value='{$fases[$i]['dataFinal']}'>";
@@ -113,14 +119,16 @@ function mostrar_fases(){
 
             <div class="admin-row">
                 <h1> Altres operacions: </h1>
-                <form>
+                <form action="./controlador/adminProcess.php" method="post">
                     Esborra els vots de la fase
-                    <input type="number" placeholder="Fase" value="">
-                    <input type="button" value="Esborra">
+                    <input type="hidden" name="method" value="esborrarVotsFase" />
+                    <input name="fase" type="number" placeholder="Fase">
+                    <input type="submit" value="Esborra">
                 </form>
-                <form>
+                <form action="./controlador/adminProcess.php" method="post">
                     Esborra tots els vots
-                    <input type="button" value="Esborra">
+                    <input type="hidden" name="method" value="esborrarVots" />
+                    <input type="submit" value="Esborra">
                 </form>
             </div>
         </div>
